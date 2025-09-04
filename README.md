@@ -1,6 +1,6 @@
 # About Translator API
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Translator is a simple scalable Laravel application that accepts text input, queues translation jobs, and uses OpenAI API via Saloon package to translate content from English to either Spanish,French, German, Italian, and Portuguese storing results as JSON.
 
 - Simple, fast routing engine - Clean RESTful API endpoints for translation management
 - Powerful dependency injection container - Service layer architecture with automatic dependency resolution
