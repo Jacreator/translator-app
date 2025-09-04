@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Translation;
+use App\Enums\TranslationStatus;
 use Illuminate\Support\Facades\DB;
 use App\Dtos\TranslationRequestDTO;
 use App\Jobs\ProcessTranslationJob;
@@ -34,7 +35,7 @@ class TranslationService
                         'source_language' => $dto->sourceLanguage,
                         'target_language' => $dto->targetLanguage,
                         'original_content' => $dto->toArray(),
-                        'status' => 'pending',
+                        'status' => TranslationStatus::Pending,
                     ]
                 );
 
@@ -73,7 +74,14 @@ class TranslationService
             ->orderBy('created_at', 'desc');
 
         if (isset($filters['status'])) {
-            $query->where('status', $filters['status']);
+            $status = $filters['status'];
+            if ($status instanceof TranslationStatus) {
+                $query->where('status', $status);
+            } elseif (is_string($status) && TranslationStatus::tryFrom($status)) {
+                $query->where('status', TranslationStatus::from($status));
+            } else {
+                $query->where('status', $status);
+            }
         }
 
         if (isset($filters['target_language'])) {

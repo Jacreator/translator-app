@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Enums\TranslationStatus;
 
 /**
  * Model representing a translation request, including source and target languages,
@@ -31,6 +32,7 @@ class Translation extends Model
         'original_content' => 'array',
         'translated_content' => 'array',
         'processed_at' => 'datetime',
+        'status' => TranslationStatus::class,
     ];
 
     /**
@@ -40,7 +42,7 @@ class Translation extends Model
      */
     public function markAsProcessing(): void
     {
-        $this->update(['status' => 'processing']);
+        $this->update(['status' => TranslationStatus::Processing]);
     }
 
     /**
@@ -54,7 +56,7 @@ class Translation extends Model
     {
         $this->update(
             [
-                'status' => 'completed',
+                'status' => TranslationStatus::Completed,
                 'translated_content' => $translatedContent,
                 'processed_at' => now(),
             ]
@@ -72,7 +74,7 @@ class Translation extends Model
     {
         $this->update(
             [
-                'status' => 'failed',
+                'status' => TranslationStatus::Failed,
                 'error_message' => $errorMessage,
                 'processed_at' => now(),
             ]
