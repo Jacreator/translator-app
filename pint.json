@@ -1,6 +1,7 @@
 {
   "preset": "laravel",
   "rules": {
-    "file_doc_comment": false
+    "no_empty_phpdoc": false,
+    "phpdoc_summary": false
   }
 }

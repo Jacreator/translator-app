@@ -13,11 +13,11 @@ readonly class TranslationRequestDTO
     /**
      * TranslationRequestDTO constructor.
      *
-     * @param string $name           The name of the translation request.
-     * @param string $title          The title of the translation request.
-     * @param string $description    The description of the translation request.
-     * @param string $sourceLanguage The source language code.
-     * @param string $targetLanguage The target language code.
+     * @param  string  $name  The name of the translation request.
+     * @param  string  $title  The title of the translation request.
+     * @param  string  $description  The description of the translation request.
+     * @param  string  $sourceLanguage  The source language code.
+     * @param  string  $targetLanguage  The target language code.
      */
     public function __construct(
         public string $name,
@@ -30,9 +30,7 @@ readonly class TranslationRequestDTO
     /**
      * Create a new TranslationRequestDTO instance from an array of request data.
      *
-     * @param array $data The request data containing translation fields.
-     *
-     * @return self
+     * @param  array  $data  The request data containing translation fields.
      */
     public static function fromRequest(array $data): self
     {

@@ -2,16 +2,16 @@
 
 namespace App\Jobs;
 
-use Exception;
+use App\Http\Integrations\OpenAIConnector\Requests\TranslationRequest;
+use App\Http\Integrations\OpenAIConnector\Translator;
 use App\Models\Translation;
+use Exception;
 use Illuminate\Bus\Queueable;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\Http\Integrations\OpenAIConnector\Translator;
-use App\Http\Integrations\OpenAIConnector\Requests\TranslationRequest;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Job responsible for processing translation requests using OpenAI and updating their status.
@@ -21,13 +21,15 @@ class ProcessTranslationJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public int $tries = 3;
+
     public int $maxExceptions = 2;
+
     public int $timeout = 120;
 
     /**
      * Create a new job instance.
      *
-     * @param Translation $translation The translation model instance.
+     * @param  Translation  $translation  The translation model instance.
      */
     public function __construct(
         public readonly Translation $translation
@@ -35,14 +37,12 @@ class ProcessTranslationJob implements ShouldQueue
 
     /**
      * Execute the job to process the translation request.
-     *
-     * @return void
      */
     public function handle(): void
     {
         $this->translation->markAsProcessing();
 
-        $connector = new Translator();
+        $connector = new Translator;
         $request = new TranslationRequest(
             content: $this->translation->original_content,
             sourceLanguage: $this->translation->source_language,
@@ -52,7 +52,7 @@ class ProcessTranslationJob implements ShouldQueue
         $response = $connector->send($request);
         $responseData = $response->json();
 
-        if (!isset($responseData['choices'][0]['message']['content'])) {
+        if (! isset($responseData['choices'][0]['message']['content'])) {
             throw new Exception('Invalid response format from OpenAI');
         }
 
@@ -63,7 +63,7 @@ class ProcessTranslationJob implements ShouldQueue
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new Exception(
-                'Invalid JSON in OpenAI response: ' . json_last_error_msg()
+                'Invalid JSON in OpenAI response: '.json_last_error_msg()
             );
         }
 
@@ -73,7 +73,7 @@ class ProcessTranslationJob implements ShouldQueue
             'Translation completed',
             [
                 'request_id' => $this->translation->id,
-                'target_language' => $this->translation->target_language
+                'target_language' => $this->translation->target_language,
             ]
         );
     }
@@ -81,17 +81,15 @@ class ProcessTranslationJob implements ShouldQueue
     /**
      * Handle a job failure after all retry attempts.
      *
-     * @param \Throwable $exception The exception thrown after job failure.
-     *
-     * @return void
+     * @param  \Throwable  $exception  The exception thrown after job failure.
      */
     public function failed(\Throwable $exception): void
     {
         Log::error(
-            'Translation job failed after all retries: ' . $exception->getMessage(),
+            'Translation job failed after all retries: '.$exception->getMessage(),
             [
                 'request_id' => $this->translation->id,
-                'attempts' => $this->attempts()
+                'attempts' => $this->attempts(),
             ]
         );
 

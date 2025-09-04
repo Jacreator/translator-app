@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
-use App\Models\Translation;
-use App\Enums\TranslationStatus;
-use Illuminate\Support\Facades\DB;
 use App\Dtos\TranslationRequestDTO;
+use App\Enums\TranslationStatus;
 use App\Jobs\ProcessTranslationJob;
+use App\Models\Translation;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Service class for handling translation requests and related operations.
@@ -39,8 +39,7 @@ class TranslationService
                     ]
                 );
 
-                ProcessTranslationJob::dispatch($translationRequest)
-                    ->onQueue('translations');
+                ProcessTranslationJob::dispatch($translationRequest);
 
                 return $translationRequest;
             }
@@ -52,8 +51,8 @@ class TranslationService
      *
      * @param int $id The ID of the translation request.
      *
-     * @return Translation|null The translation request model instance or 
-     *                                 null if not found.
+     * @return Translation|null The translation request model instance or
+     *                          null if not found.
      */
     public function getTranslationRequest(int $id): ?Translation
     {

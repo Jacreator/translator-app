@@ -15,8 +15,6 @@ class Translator extends Connector
 
     /**
      * The Base URL of the API
-     *
-     * @return string
      */
     public function resolveBaseUrl(): string
     {
@@ -25,13 +23,11 @@ class Translator extends Connector
 
     /**
      * Default headers for every request
-     *
-     * @return array
      */
     protected function defaultHeaders(): array
     {
         return [
-            'Authorization' => 'Bearer ' . config('services.openai.api_key'),
+            'Authorization' => 'Bearer '.config('services.openai.api_key'),
             'Content-Type' => 'application/json',
             // 'OpenAI-Project' => config('services.openai.project_id'),
         ];
@@ -39,8 +35,6 @@ class Translator extends Connector
 
     /**
      * Default HTTP client options
-     *
-     * @return array
      */
     protected function defaultConfig(): array
     {

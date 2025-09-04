@@ -5,16 +5,24 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Handles validation and authorization for storing a translation.
+ * @OA\Schema(
+ *     schema="TranslationRequest",
+ *     type="object",
+ *     title="Translation Request",
+ *     required={"name", "title", "description"},
  *
- * @package App\Http\Requests
+ *     @OA\Property(property="name", type="string", minLength=2, maxLength=255, example="John Doe"),
+ *     @OA\Property(property="title", type="string", minLength=3, maxLength=500, example="Welcome Message"),
+ *     @OA\Property(property="description", type="string", minLength=10, maxLength=5000, example="This is a welcome message for our users."),
+ *     @OA\Property(property="target_language", type="string", maxLength=2, example="es", enum={"es", "fr", "de", "it", "pt"})
+ * )
+ *
+ * Handles validation and authorization for storing a translation.
  */
 class StoreTranslationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
     public function authorize(): bool
     {
@@ -32,7 +40,7 @@ class StoreTranslationRequest extends FormRequest
             'name' => 'required|string|min:2|max:255',
             'title' => 'required|string|min:3|max:500',
             'description' => 'required|string|min:10|max:5000',
-            'target_language' => 'sometimes|string|size:2|in:es,fr,de,it,pt'
+            'target_language' => 'sometimes|string|size:2|in:es,fr,de,it,pt',
         ];
     }
 

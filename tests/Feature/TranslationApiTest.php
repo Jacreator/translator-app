@@ -2,11 +2,10 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
 use App\Models\Translation;
-use Illuminate\Support\Facades\Queue;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
+use Tests\TestCase;
 
 /**
  * Feature tests for the Translation API endpoints.
@@ -14,12 +13,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class TranslationApiTest extends TestCase
 {
     use RefreshDatabase;
+
     /**
      * A basic feature test example.
-     *
-     * @return void
      */
-    public function testExample(): void
+    public function test_example(): void
     {
         $response = $this->get('/');
 
@@ -28,10 +26,8 @@ class TranslationApiTest extends TestCase
 
     /**
      * Test that a translation request can be created successfully.
-     *
-     * @return void
      */
-    public function testCanCreateTranslationRequest(): void
+    public function test_can_create_translation_request(): void
     {
         Queue::fake();
 
@@ -39,7 +35,7 @@ class TranslationApiTest extends TestCase
             'name' => 'John Doe',
             'title' => 'Welcome Message',
             'description' => 'This is a welcome message for our users.',
-            'target_language' => 'es'
+            'target_language' => 'es',
         ];
 
         $response = $this->postJson('/api/v1/translations', $payload);
@@ -48,7 +44,7 @@ class TranslationApiTest extends TestCase
             ->assertJson(
                 [
                     'success' => true,
-                    'message' => 'Translation request created successfully'
+                    'message' => 'Translation request created successfully',
                 ]
             );
 
@@ -56,17 +52,15 @@ class TranslationApiTest extends TestCase
             'translations', [
                 'name' => 'John Doe',
                 'title' => 'Welcome Message',
-                'status' => 'pending'
+                'status' => 'pending',
             ]
         );
     }
 
     /**
      * Test that validation fails when invalid data is provided.
-     *
-     * @return void
      */
-    public function testValidationFailsWithInvalidData(): void
+    public function test_validation_fails_with_invalid_data(): void
     {
         $payload = [
             'name' => 'A', // Too short
@@ -82,10 +76,8 @@ class TranslationApiTest extends TestCase
 
     /**
      * Test that a translation request can be retrieved successfully.
-     *
-     * @return void
      */
-    public function testCanRetrieveTranslation(): void
+    public function test_can_retrieve_translation(): void
     {
         $translation = Translation::factory()->create();
 
@@ -97,8 +89,8 @@ class TranslationApiTest extends TestCase
                     'success' => true,
                     'data' => [
                         'id' => $translation->id,
-                        'name' => $translation->name
-                    ]
+                        'name' => $translation->name,
+                    ],
                 ]
             );
     }
