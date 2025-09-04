@@ -13,8 +13,7 @@ class TranslationRequestResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param Request $request The incoming HTTP request.
-     *
+     * @param  Request  $request  The incoming HTTP request.
      * @return array<string, mixed>
      */
     public function toArray(Request $request): array

@@ -22,9 +22,9 @@ class TranslationRequest extends Request implements HasBody
     /**
      * TranslationRequest constructor.
      *
-     * @param array  $content        The JSON content to be translated.
-     * @param string $sourceLanguage The source language code.
-     * @param string $targetLanguage The target language code.
+     * @param  array  $content  The JSON content to be translated.
+     * @param  string  $sourceLanguage  The source language code.
+     * @param  string  $targetLanguage  The target language code.
      */
     public function __construct(
         private readonly array $content,
@@ -34,8 +34,6 @@ class TranslationRequest extends Request implements HasBody
 
     /**
      * Returns the API endpoint for the translation request.
-     *
-     * @return string
      */
     public function resolveEndpoint(): string
     {
@@ -56,12 +54,12 @@ class TranslationRequest extends Request implements HasBody
             'messages' => [
                 [
                     'role' => 'system',
-                    'content' => $this->_getSystemPrompt()
+                    'content' => $this->_getSystemPrompt(),
                 ],
                 [
                     'role' => 'user',
-                    'content' => $contentString
-                ]
+                    'content' => $contentString,
+                ],
             ],
             'max_tokens' => 2000,
             'temperature' => 0.3,
@@ -77,11 +75,11 @@ class TranslationRequest extends Request implements HasBody
     {
         $targetLangName = $this->_getLanguageName($this->targetLanguage);
 
-        return "You are a professional translator. Translate the given JSON content from " .
-            "{$this->sourceLanguage} to {$targetLangName}. " .
-            "Maintain the exact JSON structure and only translate the text values. " .
-            "Preserve any HTML tags, special formatting, and maintain the professional tone. " .
-            "Return only valid JSON with the same keys but translated values.";
+        return 'You are a professional translator. Translate the given JSON content from '.
+            "{$this->sourceLanguage} to {$targetLangName}. ".
+            'Maintain the exact JSON structure and only translate the text values. '.
+            'Preserve any HTML tags, special formatting, and maintain the professional tone. '.
+            'Return only valid JSON with the same keys but translated values.';
     }
 
     /**

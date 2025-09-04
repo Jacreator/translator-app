@@ -1,0 +1,282 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "N-Translator API",
+        "description": "API for managing translation requests.",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/v1/translations": {
+            "get": {
+                "tags": [
+                    "Translation"
+                ],
+                "summary": "List translation requests",
+                "description": "Lists translation requests with optional filters.",
+                "operationId": "0f7650d7299fed763ecdf30b0f5b918e",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter by status",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "target_language",
+                        "in": "query",
+                        "description": "Filter by target language",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of translation requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Translation"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 20
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 15
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Translation"
+                ],
+                "summary": "Create a new translation request",
+                "description": "Stores a new translation request.",
+                "operationId": "11cab888cf8fc00c5ea2459809adce3d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TranslationRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Translation request created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TranslationResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/v1/translations/{id}": {
+            "get": {
+                "tags": [
+                    "Translation"
+                ],
+                "summary": "Get a translation request by ID",
+                "description": "Displays a specific translation request by its ID.",
+                "operationId": "81cc7566a88d268eb72f92d911683012",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the translation request",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Translation request found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TranslationResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Translation request not found"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "TranslationResponse": {
+                "title": "Translation Response",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Operation successful",
+                        "nullable": true
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/Translation"
+                    }
+                },
+                "type": "object"
+            },
+            "TranslationRequest": {
+                "title": "Translation Request",
+                "required": [
+                    "name",
+                    "title",
+                    "description"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "minLength": 2,
+                        "example": "John Doe"
+                    },
+                    "title": {
+                        "type": "string",
+                        "maxLength": 500,
+                        "minLength": 3,
+                        "example": "Welcome Message"
+                    },
+                    "description": {
+                        "type": "string",
+                        "maxLength": 5000,
+                        "minLength": 10,
+                        "example": "This is a welcome message for our users."
+                    },
+                    "target_language": {
+                        "type": "string",
+                        "maxLength": 2,
+                        "enum": [
+                            "es",
+                            "fr",
+                            "de",
+                            "it",
+                            "pt"
+                        ],
+                        "example": "es"
+                    }
+                },
+                "type": "object"
+            },
+            "Translation": {
+                "title": "Translation Model",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Welcome Message"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "This is a welcome message."
+                    },
+                    "source_language": {
+                        "type": "string",
+                        "example": "en"
+                    },
+                    "target_language": {
+                        "type": "string",
+                        "example": "es"
+                    },
+                    "original_content": {
+                        "type": "object"
+                    },
+                    "translated_content": {
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "processing",
+                            "completed",
+                            "failed"
+                        ]
+                    },
+                    "error_message": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "processed_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Translation",
+            "description": "Translation"
+        }
+    ]
+}

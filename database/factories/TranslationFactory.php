@@ -16,8 +16,6 @@ class TranslationFactory extends Factory
 
     /**
      * Get the default state definition for the TranslationRequest model.
-     *
-     * @return array
      */
     public function definition(): array
     {
@@ -30,28 +28,26 @@ class TranslationFactory extends Factory
             'original_content' => [
                 'name' => $this->faker->name(),
                 'title' => $this->faker->sentence(4),
-                'description' => $this->faker->paragraph(3)
+                'description' => $this->faker->paragraph(3),
             ],
-            'status' => 'pending'
+            'status' => 'pending',
         ];
     }
 
     /**
      * Set the state of the translation request as completed with translated content.
-     *
-     * @return static
      */
     public function completed(): static
     {
         return $this->state(
-            fn() => [
+            fn () => [
                 'status' => 'completed',
                 'translated_content' => [
                     'name' => 'Nombre Traducido',
                     'title' => 'Título Traducido',
-                    'description' => 'Descripción traducida al español'
+                    'description' => 'Descripción traducida al español',
                 ],
-                'processed_at' => now()
+                'processed_at' => now(),
             ]
         );
     }

@@ -2,12 +2,12 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use App\Dtos\TranslationRequestDTO;
 use App\Jobs\ProcessTranslationJob;
 use App\Services\TranslationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
+use Tests\TestCase;
 
 /**
  * Unit tests for the TranslationService class.
@@ -17,20 +17,17 @@ class TranslationServiceTest extends TestCase
     use RefreshDatabase;
 
     private TranslationService $_service;
+
     /**
      * A basic unit test example.
-     *
-     * @return void
      */
-    public function testExample(): void
+    public function test_example(): void
     {
         $this->assertTrue(true);
     }
 
     /**
      * Set up the test environment before each test.
-     *
-     * @return void
      */
     protected function setUp(): void
     {
@@ -40,10 +37,8 @@ class TranslationServiceTest extends TestCase
 
     /**
      * Test that a translation request is created and the job is dispatched.
-     *
-     * @return void
      */
-    public function testCreatesTranslationRequestAndDispatchesJob(): void
+    public function test_creates_translation_request_and_dispatches_job(): void
     {
         Queue::fake();
 
@@ -67,10 +62,9 @@ class TranslationServiceTest extends TestCase
             ]
         );
 
-        Queue::assertPushedOn(
-            'translations',
+        Queue::assertPushed(
             ProcessTranslationJob::class,
-            fn($job) => $job->translation->is($result)
+            fn(ProcessTranslationJob $job) => $job->translation->is($result)
         );
     }
 }

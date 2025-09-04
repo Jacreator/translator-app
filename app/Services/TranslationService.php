@@ -2,11 +2,12 @@
 
 namespace App\Services;
 
-use App\Models\Translation;
-use Illuminate\Support\Facades\DB;
 use App\Dtos\TranslationRequestDTO;
+use App\Enums\TranslationStatus;
 use App\Jobs\ProcessTranslationJob;
+use App\Models\Translation;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Service class for handling translation requests and related operations.
@@ -34,12 +35,11 @@ class TranslationService
                         'source_language' => $dto->sourceLanguage,
                         'target_language' => $dto->targetLanguage,
                         'original_content' => $dto->toArray(),
-                        'status' => 'pending',
+                        'status' => TranslationStatus::Pending,
                     ]
                 );
 
-                ProcessTranslationJob::dispatch($translationRequest)
-                    ->onQueue('translations');
+                ProcessTranslationJob::dispatch($translationRequest);
 
                 return $translationRequest;
             }
@@ -51,8 +51,8 @@ class TranslationService
      *
      * @param int $id The ID of the translation request.
      *
-     * @return Translation|null The translation request model instance or 
-     *                                 null if not found.
+     * @return Translation|null The translation request model instance or
+     *                          null if not found.
      */
     public function getTranslationRequest(int $id): ?Translation
     {
@@ -73,7 +73,14 @@ class TranslationService
             ->orderBy('created_at', 'desc');
 
         if (isset($filters['status'])) {
-            $query->where('status', $filters['status']);
+            $status = $filters['status'];
+            if ($status instanceof TranslationStatus) {
+                $query->where('status', $status);
+            } elseif (is_string($status) && TranslationStatus::tryFrom($status)) {
+                $query->where('status', TranslationStatus::from($status));
+            } else {
+                $query->where('status', $status);
+            }
         }
 
         if (isset($filters['target_language'])) {
